@@ -8,15 +8,16 @@ pipeline {
                     reuseNode true
                 }
             }
-            steps{
-                sh 'npm install'
-            }
-        }
-        stage("Build"){
-            steps{
-                sh 'npm run build'
-            }
+            stages{
+                stage("npm")
+                    steps{
+                        sh 'npm install'
+                    }
 
-        }
-    }
+                stage("Build"){
+                    steps{
+                        sh 'npm run build'
+                    }
+                }
+    }}}
 }
