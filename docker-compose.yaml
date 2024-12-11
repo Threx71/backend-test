@@ -51,7 +51,7 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
     ports:
-      - "8084:9000"
+      - "8084:8084"
   db_sonar:
     image: postgres:12
     environment:
