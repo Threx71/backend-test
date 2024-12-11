@@ -5,13 +5,26 @@ pipeline {
             agent {
                 docker {
                     image 'node:22-alpine'
+                    args '--network=devops-infra_default'
                     reuseNode true
                 }
             }
-            steps {
-                sh 'npm install'
-                sh 'npm run build'
-                sh 'npm run test'
+            stages {
+                stage("npm") {
+                    steps {
+                        sh 'npm install'
+                    }
+                }
+                stage("Build") {
+                    steps {
+                        sh 'npm run build'
+                    }
+                }
+                stage("test") {
+                    steps {
+                        sh 'npm run test'
+                    }
+                }
             }
         }
         stage("Control de calidad") {
@@ -25,9 +38,8 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     sh 'sonar-scanner'
-                }
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                    timeout(time: 1, unit: 'MINUTES'){
+                        waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -44,5 +56,5 @@ pipeline {
         }
     }
 }
-
+}
 
