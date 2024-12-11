@@ -39,7 +39,6 @@ pipeline {
             sh """
                 sonar-scanner \
                 -Dsonar.host.url=http://sonarqube:8084 \
-                --network devops-infra_default
             """
         }
             }
