@@ -5,7 +5,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:22-alpine'
-                    args '--network devops-infra_default'
+                    args '--network=devops-infra_default'
                     reuseNode true
                 }
             }
@@ -28,18 +28,17 @@ pipeline {
             }
         }
         stage("Control de calidad") {
-            steps {
-                script {
-                    sh '''
-                    docker run -d --name sonar-temp --network=devops-infra_default \
-                        sonarsource/sonar-scanner-cli sonar-scanner
-                    '''
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli'
+                    args '--network=host'
+                    reuseNode true
                 }
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-            sh 'sonar-scanner'
-        }
+                    sh 'sonar-scanner'
+                }
             }
         }
         stage("Subir a Nexus") {
@@ -55,4 +54,5 @@ pipeline {
         }
     }
 }
+
 
