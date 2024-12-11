@@ -35,11 +35,12 @@ pipeline {
                     reuseNode true
                 }
             }
-            stage {
+            steps {
                 withSonarQubeEnv('sonarqube') {
                     sh 'sonar-scanner'
-                    timeout(time: 1, unit: 'MINUTES'){
-                        waitForQualityGate abortPipeline: true
+                }
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -56,5 +57,5 @@ pipeline {
         }
     }
 }
-}
+
 
