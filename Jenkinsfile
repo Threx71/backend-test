@@ -36,8 +36,12 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh 'sonar-scanner'
-                }
+            sh """
+                sonar-scanner \
+                -Dsonar.host.url=http://sonarqube:8084 \
+                --network devops-infra_default
+            """
+        }
             }
         }
         stage("Subir a Nexus") {
