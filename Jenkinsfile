@@ -26,23 +26,17 @@ pipeline {
                 }
             }
         }
-        stage("control de calidad"){
-            agent{
+        stage("Control de calidad") {
+            agent {
                 docker {
-                    label 'conetenedores'
                     image 'sonarsource/sonar-scanner-cli'
                     args '--network=devops-infra_default'
                     reuseNode true
                 }
             }
-            stages{
-                stage("sonarqube"){
-                    steps{
-                        withSonarQubeEnv('sonarqube'){
-                            sh 'sonar-scanner'
-                        }
-                    }
-                    
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'sonar-scanner'
                 }
             }
         }
@@ -59,3 +53,4 @@ pipeline {
         }
     }
 }
+
