@@ -35,7 +35,7 @@ pipeline {
                     reuseNode true
                 }
             }
-            steps {
+            stage {
                 withSonarQubeEnv('sonarqube') {
                     sh 'sonar-scanner'
                     timeout(time: 1, unit: 'MINUTES'){
