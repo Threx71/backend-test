@@ -37,10 +37,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-            sh """
-                sonar-scanner \
-                -Dsonar.host.url=http://localhost:8084 \
-            """
+            sh 'sonar-scanner'
         }
             }
         }
