@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        USERNAME = "gonzaloReyes"
-    }
     stages{
         stage("build"){
             agent {
