@@ -5,7 +5,6 @@ pipeline {
             agent {
                 docker {
                     image 'node:22-alpine'
-                    args '--network=devops-infra_default'
                     reuseNode true
                 }
             }
@@ -31,7 +30,6 @@ pipeline {
             agent {
                 docker {
                     image 'sonarsource/sonar-scanner-cli'
-                    args '--network=host'
                     reuseNode true
                 }
             }
