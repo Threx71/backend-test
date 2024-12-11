@@ -40,6 +40,11 @@ pipeline {
                     sh 'sonar-scanner'
                 }
             }
+            steps{
+                timeout(time: 1, unit: 'MINUTES'){
+                    waitForQualityGate abortPipeline: true
+                }
+            }
         }
         stage("Subir a Nexus") {
             steps {
