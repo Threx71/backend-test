@@ -1,10 +1,7 @@
 pipeline {
     agent any
-    environment {
-        SONAR_HOST_URL = 'http://sonarqube:9000'
-    }
-    stages {
-        stage("Build") {
+    stages{
+        stage("build"){
             agent {
                 docker {
                     label 'contenedores'
@@ -12,26 +9,25 @@ pipeline {
                     reuseNode true
                 }
             }
-            stages {
-                stage("Install Dependencies") {
-                    steps {
+            stages{
+                stage("build - instalacion dependencias"){
+                    steps{
                         sh 'npm install'
                     }
                 }
-                stage("Run Tests") {
-                    steps {
+                stage("build - ejecucion de test"){
+                    steps{
                         sh 'npm run test'
                     }
                 }
-                stage("Build Project") {
-                    steps {
+                stage("build - build del proyecto"){
+                    steps{
                         sh 'npm run build'
                     }
                 }
             }
         }
-        
-        stage("Quality Assurance") {
+        stage("Quality assurance"){
             agent {
                 docker {
                     label 'contenedores'
@@ -40,25 +36,17 @@ pipeline {
                     reuseNode true
                 }
             }
-            stages {
-                stage("SonarQube Analysis") {
-                    steps {
+            stages{
+                stage("Quality assurance - sonarqube"){
+                    steps{
                         withSonarQubeEnv('sonarqube') {
-                            sh """
-                                sonar-scanner \
-                                -Dsonar.host.url=${SONAR_HOST_URL} \
-                                -Dsonar.projectKey=your-project-key \
-                                -Dsonar.sources=. \
-                                -Dsonar.exclusions=**/node_modules/**,**/*.spec.js \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                            """
+                            sh 'sonar-scanner'
                         }
                     }
                 }
-                
-                stage("Quality Gate") {
-                    steps {
-                        script {
+                stage("Quality assurance - quality gate"){
+                    steps{
+                        script{
                             timeout(time: 1, unit: 'MINUTES') {
                                 def qg = waitForQualityGate()
                                 if (qg.status != 'OK') {
@@ -70,11 +58,10 @@ pipeline {
                 }
             }
         }
-        
-        stage("Delivery") {
-           steps {
+        stage("delivery - subida a nexus"){
+           steps{
                 script {
-                    docker.withRegistry("http://localhost:8082", "registry") {
+                    docker.withRegistry("http://localhost:8082", "registry"){
                         sh 'docker build -t backend-devops .'
                         sh 'docker tag backend-devops:latest localhost:8082/backend-devops:latest'
                         sh 'docker push localhost:8082/backend-devops:latest'
