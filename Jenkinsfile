@@ -28,11 +28,12 @@ pipeline {
             }
         }
         stage("Control de calidad") {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli'
-                    args '--network=devops-infra_default'
-                    reuseNode true
+            steps {
+                script {
+                    sh '''
+                    docker run -d --name sonar-temp --network=devops-infra_default \
+                        sonarsource/sonar-scanner-cli sonar-scanner
+                    '''
                 }
             }
             steps {
