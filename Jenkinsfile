@@ -27,7 +27,7 @@ pipeline {
                 }
             }
         }
-        stage("Quality assurance"){
+        stage("Calidad"){
             agent {
                 docker {
                     label 'contenedores'
@@ -37,14 +37,14 @@ pipeline {
                 }
             }
             stages{
-                stage("Quality assurance - sonarqube"){
+                stage("sonarqube"){
                     steps{
                         withSonarQubeEnv('sonarqube') {
                             sh 'sonar-scanner'
                         }
                     }
                 }
-                stage("Quality assurance - quality gate"){
+                stage("esperar quality gate"){
                     steps{
                         script{
                             timeout(time: 1, unit: 'MINUTES') {
@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-        stage("delivery - subida a nexus"){
+        stage("nexus"){
            steps{
                 script {
                     docker.withRegistry("http://localhost:8082", "registry"){
