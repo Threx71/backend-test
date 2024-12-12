@@ -28,14 +28,14 @@ spec:
   replicas: 6
   selector:
     matchLabels:
-      app: backend
+      app: backend-test
   template:
     metadata:
       labels:
-        app: backend
+        app: backend-test
     spec:
       containers:
-      - name: backend
+      - name: backend-test
         image: localhost:8082/backend-test:latest  # Adjust with your Nexus image
         ports:
         - containerPort: 3000  # Adjust port as per your application
