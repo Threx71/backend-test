@@ -1,1 +1,68 @@
-hello world
+# Configmap for USERNAME environment variable
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  USERNAME: gonzaloReyes
+
+---
+
+# Secret for API_KEY environment variable
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+stringData:
+  API_KEY: estoNoEsUnaApiKey
+
+---
+
+# Deployment with 6 replicas
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: localhost:8082/backend-test:latest  # Adjust with your Nexus image
+        ports:
+        - containerPort: 3000  # Adjust port as per your application
+        env:
+        - name: USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: USERNAME
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: API_KEY
+
+---
+
+# Service to expose the application
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000  # Should match container port
+  type: LoadBalancer
