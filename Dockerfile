@@ -1,22 +1,15 @@
-# Primera etapa de construccion
-FROM node:22 AS build
+#node
+FROM node:22-alpine
 
-WORKDIR /usr/app
-
+#ambiente
+WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
+#build
 COPY . .
 RUN npm run build
 
-# Segunda etapa de creacion de imagen final
-FROM node:22-alpine
-
-WORKDIR /usr/app
-
-COPY --from=build /usr/app/dist ./dist
-COPY --from=build /usr/app/package*.json ./
-RUN npm ci --only=production
+#play
 EXPOSE 3000
-
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/app/index.js"]
