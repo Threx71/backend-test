@@ -12,4 +12,4 @@ RUN npm run build
 
 #play
 EXPOSE 3000
-CMD ["node", "dist/app/index.js"]
+CMD ["node", "dist/index.js"]
