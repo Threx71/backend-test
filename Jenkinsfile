@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages{
-        stage("build"){
+        stage("compilado"){
             agent {
                 docker {
                     label 'contenedores'
@@ -10,17 +10,17 @@ pipeline {
                 }
             }
             stages{
-                stage("build - instalacion dependencias"){
+                stage("dependencias"){
                     steps{
                         sh 'npm install'
                     }
                 }
-                stage("build - ejecucion de test"){
+                stage("prueba con coverage"){
                     steps{
                         sh 'npm run test'
                     }
                 }
-                stage("build - build del proyecto"){
+                stage("build"){
                     steps{
                         sh 'npm run build'
                     }
@@ -62,9 +62,9 @@ pipeline {
            steps{
                 script {
                     docker.withRegistry("http://localhost:8082", "registry"){
-                        sh 'docker build -t backend-devops .'
-                        sh 'docker tag backend-devops:latest localhost:8082/backend-devops:latest'
-                        sh 'docker push localhost:8082/backend-devops:latest'
+                        sh 'docker build -t backend-test .'
+                        sh 'docker tag backend-test:latest localhost:8082/backend-test:latest'
+                        sh 'docker push localhost:8082/backend-test:latest'
                     }
                 }
            } 
