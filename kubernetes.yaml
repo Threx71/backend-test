@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: app-config
 data:
-  USERNAME: gonzaloReyes
+  USERNAME: devops-user
 
 ---
 
@@ -13,7 +13,7 @@ metadata:
   name: app-secrets
 type: Opaque
 stringData:
-  API_KEY: estoNoEsUnaApiKey
+  API_KEY: your-secret-api-key-here
 
 ---
 
@@ -33,10 +33,10 @@ spec:
     spec:
       containers:
       - name: backend-test
-        image: localhost:8082/backend-test:latest  
-        imagePullPolicy: Always
+        image: localhost:8082/backend-test:latest
         ports:
-        - containerPort: 3000  
+        - containerPort: 3000
+        env:
         - name: USERNAME
           valueFrom:
             configMapKeyRef:
@@ -53,12 +53,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: backend-test
 spec:
   selector:
-    app: backend
+    app: backend-test
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 3000  
+    targetPort: 3000
   type: LoadBalancer
